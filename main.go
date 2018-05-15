@@ -91,13 +91,16 @@ func main() {
 
 			latest_version := available_versions[len(available_versions)-1]
 			r, _ := regexp.Compile("(\\d+)(?:\\.(\\d+))*")
-			fmt.Println(r.FindString(latest_version))
+			if software_version == "0.0.0" {
+				fmt.Println(r.FindString(latest_version))
+			} else {
 
-			latest_version_int64 := parseVersion(r.FindString(latest_version), 4)
-			software_version_int64 := parseVersion(software_version, 4)
+				latest_version_int64 := parseVersion(r.FindString(latest_version), 4)
+				software_version_int64 := parseVersion(software_version, 4)
 
-			if latest_version_int64 > software_version_int64 {
-				fmt.Println("Upgrade available !")
+				if latest_version_int64 > software_version_int64 {
+					fmt.Println("Upgrade available to " + r.FindString(latest_version) + " !")
+				}
 			}
 		}
 	}
