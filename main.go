@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
     "fmt"
     "gopkg.in/yaml.v2"
     "io/ioutil"
@@ -11,10 +12,14 @@ import (
     "strconv"
     "github.com/parnurzeal/gorequest"
     "regexp"
+    "net/http"
+    "encoding/json"
+    "github.com/gorilla/mux"
+
+    "io"
 )
 
-var software_name = os.Args[1]
-var software_version = os.Args[2]
+//var software_name = os.Args[1]
 
 type Config struct {
     Url string
@@ -65,8 +70,36 @@ func parseVersion(s string, width int) int64 {
 	return result;
 }
 
+func GetVersion(w http.ResponseWriter, r *http.Request) {
+	
+	var software_version string
+	type data struct {
+		Version string
+	}
 
-func main() {
+	if r.Body == nil {
+		fmt.Println("EMPTY")
+	}
+
+	decoder := json.NewDecoder(r.Body)
+
+	var t data
+	err := decoder.Decode(&t)
+
+	if err == io.EOF {
+		software_version = ""
+	} else if err != nil {
+		panic(err)
+	}
+
+	if t.Version != "" {
+		software_version = t.Version
+	}
+
+	params := mux.Vars(r)
+	software_name := params["software"]
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
 	for _, yamlFile := range listYamlFiles(".") {
 		if strings.Split(yamlFile, ".")[0] == software_name {
 			c := parseYaml(yamlFile)
@@ -91,17 +124,32 @@ func main() {
 
 			latest_version := available_versions[len(available_versions)-1]
 			r, _ := regexp.Compile("(\\d+)(?:\\.(\\d+))*")
-			if software_version == "0.0.0" {
-				fmt.Println(r.FindString(latest_version))
+			if software_version == "" {
+				if err := json.NewEncoder(w).Encode(r.FindString(latest_version)); err != nil {
+					panic(err)
+				}
 			} else {
 
 				latest_version_int64 := parseVersion(r.FindString(latest_version), 4)
 				software_version_int64 := parseVersion(software_version, 4)
 
 				if latest_version_int64 > software_version_int64 {
-					fmt.Println("Upgrade available to " + r.FindString(latest_version) + " !")
+					//fmt.Println("Upgrade available to " + r.FindString(latest_version) + " !")
+					w.WriteHeader(http.StatusOK)
+					if err := json.NewEncoder(w).Encode(r.FindString(latest_version)); err != nil {
+						panic(err)
+					}
+				} else {
+					w.WriteHeader(http.StatusOK)
 				}
 			}
 		}
 	}
+}
+
+
+func main() {
+	router := mux.NewRouter()
+	router.HandleFunc("/{software}", GetVersion).Methods("GET")
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
