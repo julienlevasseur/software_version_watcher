@@ -6,6 +6,7 @@ go:
 addons:
   artifacts: true
   target_paths:
+    - /${TRAVIS_REPO_SLUG}
 
 env:
   global:
