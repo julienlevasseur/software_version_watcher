@@ -2,18 +2,16 @@ language: go
 go:
 - 1.8
 - 1.9
-
 addons:
   artifacts: true
-
 env:
   global:
-    - ARTIFACTS_BUCKET=jlevasseur-artifact-storage
-    - ARTIFACTS_KEY=0
-    - ARTIFACTS_SECRET=0
-
+  - ARTIFACTS_BUCKET=jlevasseur-artifact-storage
+  matrix:
+  - secure: tLoKG5IThCu9skAUeMgxLGeKkYfY19y7QhnpVffIit/KNVOeFgk8rwbJZVJveUyuVvTHv1d4wzytJk76wB5v4dV8pI016I2BGbGjSAy3i3/EHB9WHZIFRw+/zvIcRXOyKg3ltamKsbm66aXwkEeZKKv8r1hK4YR+5UHhMv5DlxBHUGYg+gSGOT/Fph2+mD6I3E+RikhJZVgmpy+GQMtYZMH+PQ1Uc2peYWJ62IOFY0h5cMUgpxWfjABgYJRj65uuIPIBNgiVutrbxljbR1zTEnfBnqZ/rHwP1+MFG627tRaweH52RPKE5GCgD2uk2axDbUvxN+ZTEaiMuRhaUFZfq5p8y7sIou6CVcIbLNEFqVEobcehWgGxFcl/UK0762M7vWk6pqnbEYNjngOJVjfyyrfKo/JFS0Vv4FU97q0IC2dxpl0Mn+KeY4J3uutE9mAAH9sVNCpg6rf01GNfRvDBEQKhqAsBcUvbqUvnZfWA+FTepCg2CyIDYk6LNe+RtRtGFUXe6JFqSyHBLaET70MW1rktVu/2j7H/u6mzQlDoknCOQvpMBJXcroRd7mfyJP0s/xBPVm0wh1kgTy4GAT1nkirqxTr15za55pt04PHBj4mGcLl87gx4VSMe+m4cSGHLOqhENNMVoH9ssQD8nqhDEtQW0l4EeqZMsmRBBUpJZUE=
+  - secure: DxuajakaD5FkjCobmatHrrRUd1YHw/rVp7T51P12nEKjnIvt90K60zW5uLw4PbYJSj3SbNaH4sC1goQ92Unp0+mteIR5uOhdpZyLurCV69WDtxS4i4pQ4/RX7okVlar5XhwMvnldOCjB7ZmUSKEgl81QzpQgy6xZV2iymOqcemRSbKZilsbUvUQup7xybSxfXSRy0zR/8YSgtz4dhk8rNZ6Kin79822Jx1SyNNLYTyY4OaJfSHYFZ9flS8szw3pUX9etrh2zl+xBrrAIsnq/j0JLHnpIheYhYl3oPO8lQ+w0AAJ2RtluPaVxImvzWbATkoA9u//Az02RdIQm2RlbDBM20uV6ADqnI62xgb2JlPPXKjBH8ddAhGN2mR5LzTGQGYphItb+znEawO5PgpUuHuANDtRSpCTuriqz5cZuxQbGq0E8ugy5u2UumqnRHXVZpo0ViWnbD5ue/GpBsysiqCsxg4VQg3eGUMp7TQnDgUDXB3moi5Z5NZo50A4WuI/h7l/gKpClzcCzY8aBLqNPRnNpCiI7cQUuITYrQOpByvycXQcRM1u5kXd+tSpHaRG4iM43NVLnkcam5NejQucDIxVVPQyLitTzjd7jYijyo1xaFp0Mv0eeME0z3W8gx4XjcsVpG6Q5FQlpE9qnQbTe2ihOAwGq3PTAQM+m6VGoYA4=
 before_install:
-  - go get -u golang.org/x/lint/golint
+- go get -u golang.org/x/lint/golint
 script:
-  - "$GOPATH/bin/golint ."
-  - go build
+- "$GOPATH/bin/golint ."
+- go build
