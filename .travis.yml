@@ -1,0 +1,10 @@
+language: go
+go:
+- 1.8
+- 1.9
+
+before_install:
+  - go get -u golang.org/x/lint/golint
+script:
+  - "$GOPATH/bin/golint ."
+  - go build
