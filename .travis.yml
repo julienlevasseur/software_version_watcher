@@ -9,6 +9,8 @@ addons:
 env:
   global:
     - ARTIFACTS_BUCKET=jlevasseur-artifact-storage
+    - ARTIFACTS_KEY=0
+    - ARTIFACTS_SECRET=0
 
 before_install:
   - go get -u golang.org/x/lint/golint
