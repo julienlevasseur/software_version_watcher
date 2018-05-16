@@ -3,6 +3,13 @@ go:
 - 1.8
 - 1.9
 
+addons:
+  artifacts: true
+
+env:
+  global:
+    - ARTIFACTS_BUCKET=jlevasseur-artifact-storage
+
 before_install:
   - go get -u golang.org/x/lint/golint
 script:
