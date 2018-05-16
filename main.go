@@ -19,10 +19,9 @@ import (
     "io"
 )
 
-//var software_name = os.Args[1]
-
+// Config that represent the yml structure
 type Config struct {
-    Url string
+    URL string
     Matcher string
 }
 
@@ -70,9 +69,10 @@ func parseVersion(s string, width int) int64 {
 	return result;
 }
 
+// GetVersion retrieve the version of the softwar
 func GetVersion(w http.ResponseWriter, r *http.Request) {
 	
-	var software_version string
+	var softwareVersion string
 	type data struct {
 		Version string
 	}
@@ -87,27 +87,27 @@ func GetVersion(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&t)
 
 	if err == io.EOF {
-		software_version = ""
+		softwareVersion = ""
 	} else if err != nil {
 		panic(err)
 	}
 
 	if t.Version != "" {
-		software_version = t.Version
+		softwareVersion = t.Version
 	}
 
 	params := mux.Vars(r)
-	software_name := params["software"]
+	softwareName := params["software"]
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	for _, yamlFile := range listYamlFiles(".") {
-		if strings.Split(yamlFile, ".")[0] == software_name {
+		if strings.Split(yamlFile, ".")[0] == softwareName {
 			c := parseYaml(yamlFile)
-			_, body, _ := gorequest.New().Get(c.Url).End()
+			_, body, _ := gorequest.New().Get(c.URL).End()
 			
 			array := strings.Split(body, "\n")
 
-			var available_versions []string
+			var availableVersions []string
 			var av []string
 
 			for _, version := range array {
@@ -118,25 +118,24 @@ func GetVersion(w http.ResponseWriter, r *http.Request) {
 
 			for _, v := range av {
 				if strings.Contains(v, c.Matcher) {
-					available_versions = append(available_versions, v)
+					availableVersions = append(availableVersions, v)
 				}
 			}
 
-			latest_version := available_versions[len(available_versions)-1]
+			latestVersion := availableVersions[len(availableVersions)-1]
 			r, _ := regexp.Compile("(\\d+)(?:\\.(\\d+))*")
-			if software_version == "" {
-				if err := json.NewEncoder(w).Encode(r.FindString(latest_version)); err != nil {
+			if softwareVersion == "" {
+				if err := json.NewEncoder(w).Encode(r.FindString(latestVersion)); err != nil {
 					panic(err)
 				}
 			} else {
 
-				latest_version_int64 := parseVersion(r.FindString(latest_version), 4)
-				software_version_int64 := parseVersion(software_version, 4)
+				latestVersionInt64 := parseVersion(r.FindString(latestVersion), 4)
+				softwareVersionInt64 := parseVersion(softwareVersion, 4)
 
-				if latest_version_int64 > software_version_int64 {
-					//fmt.Println("Upgrade available to " + r.FindString(latest_version) + " !")
+				if latestVersionInt64 > softwareVersionInt64 {
 					w.WriteHeader(http.StatusOK)
-					if err := json.NewEncoder(w).Encode(r.FindString(latest_version)); err != nil {
+					if err := json.NewEncoder(w).Encode(r.FindString(latestVersion)); err != nil {
 						panic(err)
 					}
 				} else {
