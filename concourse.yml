@@ -1,0 +1,3 @@
+---
+url: https://github.com/concourse/concourse/releases
+matcher: download/v
