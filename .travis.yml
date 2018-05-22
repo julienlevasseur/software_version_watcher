@@ -19,11 +19,15 @@ jobs:
   include:
     - stage: lint & go build
       script:
+        - go version
         - "$GOPATH/bin/golint ."
         - go build
-    - stage: docker build
+    - stage: docker build & push
       script:
+        - docker version
+        - pip install --user awscli
+        - export PATH=$PATH:$HOME/.local/bin
+        - eval $(aws ecr get-login --region us-east-1)
         - docker build -t software_version_watcher .
         - docker tag software_version_watcher:latest 205942832418.dkr.ecr.us-east-1.amazonaws.com/julienlevasseur/software_version_watcher:latest
-    - stage: docker push
-      script: docker push 205942832418.dkr.ecr.us-east-1.amazonaws.com/julienlevasseur/software_version_watcher:latest
+        - docker push 205942832418.dkr.ecr.us-east-1.amazonaws.com/julienlevasseur/software_version_watcher:latest
