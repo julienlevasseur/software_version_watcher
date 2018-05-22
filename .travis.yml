@@ -29,5 +29,5 @@ jobs:
         - export PATH=$PATH:$HOME/.local/bin
         - eval $(aws ecr get-login --region us-east-1| sed 's|https://||')
         - docker build -t software_version_watcher .
-        - docker tag software_version_watcher:latest 205942832418.dkr.ecr.us-east-1.amazonaws.com/julienlevasseur/software_version_watcher:latest
-        - docker push 205942832418.dkr.ecr.us-east-1.amazonaws.com/julienlevasseur/software_version_watcher:latest
+        - docker tag software_version_watcher:latest 205942832418.dkr.ecr.us-east-1.amazonaws.com/software_version_watcher:latest
+        - docker push 205942832418.dkr.ecr.us-east-1.amazonaws.com/software_version_watcher:latest
